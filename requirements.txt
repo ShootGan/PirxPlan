@@ -1,0 +1,4 @@
+fastapi
+sqlmodel
+pydantic_settings
+psycopg2
