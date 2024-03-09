@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Category(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(index=True, max_length=10)
+    name: str = Field(index=True, max_length=30)
     objects: List["Object"] = Relationship(back_populates="category")
 
 class Object(SQLModel, table=True):

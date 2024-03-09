@@ -5,11 +5,11 @@ DESCRIPTION = """App for managing reservations"""
 VERSION = "0.1.0"
 tags_metadata = [
     {
-        "name": "reservation",
+        "name": "reservations",
         "description": "Operations with reservations."
     },
     {
-        "name": "category",
+        "name": "categories",
         "description": "Operations with categories."
     }
 ]
