@@ -1,14 +1,15 @@
-
 """
 Module for handling category routes.
 """
+
 from fastapi import APIRouter, HTTPException, Query
+from sqlmodel import Session, select
 from starlette import status
+
 from database import models
 from database.database import engine
-from sqlmodel import Session, select
 
-router = APIRouter(prefix='/categories', tags=['categories'])
+router = APIRouter(prefix="/categories", tags=["categories"])
 
 
 @router.get("/", response_model=list[models.Category])
@@ -25,11 +26,10 @@ async def get_categories(offset: int = 0, limit: int = Query(default=30, le=100)
     """
     with Session(engine) as session:
         categories = session.exec(
-            models.Category.__table__.select()
-            .offset(offset)
-            .limit(limit)
+            models.Category.__table__.select().offset(offset).limit(limit)
         ).all()
     return categories
+
 
 @router.get("/{category_name:str}", response_model=models.Category)
 async def get_category_by_name(category_name: str):
@@ -43,14 +43,15 @@ async def get_category_by_name(category_name: str):
         models.Category: The category object.
     """
     with Session(engine) as session:
-        print('kupa')
         category = session.exec(
-            select(models.Category)
-            .where(models.Category.name == category_name)
+            select(models.Category).where(models.Category.name == category_name)
         ).first()
         if not category:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Category not found"
+            )
     return category
+
 
 @router.post("/create")
 async def create_category(category: models.Category):
@@ -67,15 +68,19 @@ async def create_category(category: models.Category):
         models.Category: The created category object.
     """
     if not category.name or not category.name.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category name is required")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Category name is required"
+        )
     if len(category.name) > 30:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category name too long")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Category name too long"
+        )
     if category.name.isdigit():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category name cannot contain only numbers")
-   
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Category name cannot contain only numbers",
+        )
+
     with Session(engine) as session:
         session.add(category)
         session.commit()
