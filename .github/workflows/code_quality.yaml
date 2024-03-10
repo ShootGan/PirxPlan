@@ -1,0 +1,30 @@
+name: Check code quality
+on: 
+  pull_request:
+  push:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install flake8 black
+      
+      - name: Run flake8
+        run: |
+          flake8 .
+
+      - name: Run black
+        run: |
+          black --check .
+
