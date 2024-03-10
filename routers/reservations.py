@@ -1,16 +1,19 @@
+from datetime import datetime, timedelta
+from typing import Optional
+
 from fastapi import APIRouter, HTTPException, Query
+from sqlmodel import Session, select
 from starlette import status
+
 from database import models
 from database.database import engine
-from sqlmodel import Session, select
-from typing import Optional
-from datetime import timedelta, datetime
 
 router = APIRouter(prefix="/reservations", tags=["reservations"])
 
 
 @router.get("/", response_model=list[models.Reservation])
-async def get_reservation(offset: int = 0, limit: int = Query(default=30, le=100)):
+async def get_reservation(offset: int = 0,
+                          limit: int = Query(default=30, le=100)):
     with Session(engine) as session:
         reservations = session.exec(
             select(models.Reservation).offset(offset).limit(limit)
@@ -35,7 +38,8 @@ async def create_reseravation(reseravation: models.ReservationCreate):
             ).first()
             if not object_to_reserve:
                 raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="Object not found"
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Object not found"
                 )
             reseravation.object_id = object_to_reserve.id
 

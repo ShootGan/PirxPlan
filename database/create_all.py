@@ -1,4 +1,3 @@
-import models
 from sqlmodel import SQLModel
 
 from database import engine
