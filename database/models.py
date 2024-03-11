@@ -5,11 +5,27 @@ from pydantic import field_validator, model_validator
 from sqlmodel import Field, Relationship, SQLModel
 
 
-class Category(SQLModel, table=True):
+class CategoryBase(SQLModel):
+    name: str = Field(index=True, max_length=30, unique=True)
+
+    @field_validator("name")
+    @classmethod
+    def name_validate(cls, v: str) -> str:
+        if v.isnumeric():
+            raise ValueError("Name must not be a number")
+        if not v.strip():
+            raise ValueError("Name must not be empty")
+        return v
+
+
+class Category(CategoryBase, table=True):
     __tablename__ = "categories"
     id: Optional[int] = Field(default=None, primary_key=True)
-    name: str = Field(index=True, max_length=30)
     objects: List["Object"] = Relationship(back_populates="category")
+
+
+class CategoryCreate(CategoryBase):
+    pass
 
 
 class Object(SQLModel, table=True):

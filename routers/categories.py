@@ -54,8 +54,8 @@ async def get_category_by_name(category_name: str):
     return category
 
 
-@router.post("/create")
-async def create_category(category: models.Category):
+@router.post("/create", response_model=models.Category)
+async def create_category(category: models.CategoryCreate):
     """
     Create a new category.
 
@@ -68,20 +68,9 @@ async def create_category(category: models.Category):
     Returns:
         models.Category: The created category object.
     """
-    if not category.name or not category.name.strip():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category name is required")
-    if len(category.name) > 30:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Category name too long")
-    if category.name.isdigit():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Category name cannot contain only numbers",
-        )
-
     with Session(engine) as session:
-        session.add(category)
+        db_category = models.Category.model_validate(category)
+        session.add(db_category)
         session.commit()
-        session.refresh(category)
-        return category
+        session.refresh(db_category)
+        return db_category
