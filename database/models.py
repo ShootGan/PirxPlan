@@ -28,6 +28,10 @@ class CategoryCreate(CategoryBase):
     pass
 
 
+class CategoryUpdate(CategoryBase):
+    pass
+
+
 class Object(SQLModel, table=True):
     __tablename__ = "objects"
     id: Optional[int] = Field(default=None, primary_key=True)

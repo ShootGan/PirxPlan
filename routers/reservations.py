@@ -1,6 +1,3 @@
-from datetime import datetime, timedelta
-from typing import Optional
-
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import Session, select
 from starlette import status

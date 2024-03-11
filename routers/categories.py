@@ -74,3 +74,49 @@ async def create_category(category: models.CategoryCreate):
         session.commit()
         session.refresh(db_category)
         return db_category
+
+
+@router.patch("/{category_id:int}", response_model=models.Category)
+async def update_category(category_id: int, category: models.CategoryUpdate):
+    """
+    Update a category by its ID.
+
+    Args:
+        category_id (int): The ID of the category.
+        category (models.CategoryUpdate): The updated category object.
+
+    Raises:
+        HTTPException: If the category is not found.
+
+    Returns:
+        models.Category: The updated category object.
+    """
+    with Session(engine) as session:
+        db_category = session.get(models.Category, category_id)
+        if not db_category:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="Category not found")
+        category_data = category.model_dump(exclude_unset=True)
+        db_category.sqlmodel_update(category_data)
+        session.add(db_category)
+        session.commit()
+        session.refresh(db_category)
+    return db_category
+
+
+@router.delete("/{category_id:int}")
+def delete_category(category_id: int):
+    """
+    Delete a category by its ID.
+
+    Args:
+        category_id (int): The
+    """
+    with Session(engine) as session:
+        db_category = session.get(models.Category, category_id)
+        if not db_category:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="Category not found")
+        session.delete(db_category)
+        session.commit()
+    return {"message": "Category deleted successfully"}
