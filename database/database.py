@@ -13,6 +13,6 @@ from sqlmodel import create_engine
 #     return Settings()
 
 # settings: Settings = get_settings()
-database_connection_url = r"postgresql://postgres:<password>@localhost:5432/devdb"  # noqa: E501
+database_connection_url = r"postgresql://postgres:superSecretPassword@postgress:5432/devdb"  # noqa: E501
 
 engine = create_engine(database_connection_url, echo=True)

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  dev_container:
+    build:
+      context: ../.
+      dockerfile: dev.Dockerfile
+    container_name: dev_container
+    networks: 
+      - backend-dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../:/workspace:cached
+    command: sleep infinity
+  
+  postgress:
+    image: "postgres:latest"
+    container_name: postgress
+    environment:
+      - POSTGRES_PASSWORD=superSecretPassword
+      - POSTGRES_DB=devdb
+    networks: 
+      - backend-dev
+    ports: 
+      - "5432:5432"
+networks:
+  backend-dev:
+    driver: bridge
