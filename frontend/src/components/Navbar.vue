@@ -16,6 +16,9 @@
                     <li class="nav-item">
                         <RouterLink class="nav-link active" aria-current="page" href="#" to="/categories">Categories</RouterLink>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link active" aria-current="page" href="#" to="/reservations">Reservations</RouterLink>
+                    </li>
                 </ul>
             </div>
         </div>  
